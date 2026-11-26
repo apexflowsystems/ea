@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ApexFlow — SMElite (Public View)</title>
+<meta name="theme-color" content="#0B0E14">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0B0E14; --card:#11151F; --input:#0D1117; --accent:#00D4AA;
+  --text:#E8ECF1; --muted:#8A94A6; --dim:#5A6478; --border:rgba(255,255,255,.08);
+  --danger:#FF4757; --ok:#2ED573; --warn:#FFA502;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.5}
+a{color:var(--accent);cursor:pointer}
+.risk{background:#1a1008;border-bottom:1px solid rgba(255,165,2,.25);padding:10px 16px;font-size:12px;color:var(--muted);text-align:center}
+.risk strong{color:var(--warn)}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(11,14,20,.92);backdrop-filter:blur(10px);z-index:20;gap:12px;flex-wrap:wrap}
+.logo{font-weight:800;font-size:18px;letter-spacing:.02em;cursor:pointer}
+.logo span{color:var(--accent)}
+.nav-links{display:flex;gap:8px;flex-wrap:wrap}
+.nav-link{background:none;border:none;color:var(--muted);font:inherit;font-size:13px;font-weight:500;padding:6px 10px;border-radius:8px;cursor:pointer}
+.nav-link:hover,.nav-link.active{color:var(--accent);background:rgba(0,212,170,.08)}
+.wrap{max-width:960px;margin:0 auto;padding:28px 18px 64px}
+.section{display:none}
+.section.active{display:block}
+h1{font-size:26px;margin-bottom:8px}
+h2{font-size:20px;margin-bottom:8px}
+.lead{color:var(--muted);font-size:14px;margin-bottom:22px;max-width:560px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px}
+.grid{display:grid;gap:14px}
+.grid-2{grid-template-columns:1fr 1fr}
+@media(max-width:720px){.grid-2{grid-template-columns:1fr}}
+.price{font-size:28px;font-weight:700;color:var(--accent)}
+.badge{display:inline-block;font-size:11px;font-weight:600;padding:3px 8px;border-radius:999px;background:rgba(0,212,170,.12);color:var(--accent);margin-bottom:10px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:none;border-radius:10px;padding:10px 16px;font:inherit;font-size:13px;font-weight:600;cursor:pointer}
+.btn-primary{background:var(--accent);color:#04110c}
+.btn-secondary{background:transparent;color:var(--text);border:1px solid var(--border)}
+.btn:hover{filter:brightness(1.05)}
+.list{font-size:13px;color:var(--muted);padding-left:18px}
+.list li{margin:6px 0}
+label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}
+input,textarea,select{width:100%;background:var(--input);border:1px solid var(--border);border-radius:10px;color:var(--text);padding:10px 12px;font:inherit;font-size:14px;margin-bottom:12px}
+textarea{min-height:120px;resize:vertical}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:560px){.form-row{grid-template-columns:1fr}}
+.note{font-size:12px;color:var(--dim);margin-top:10px}
+.footer{border-top:1px solid var(--border);padding:20px 18px;text-align:center;font-size:12px;color:var(--dim)}
+.footer a{margin:0 8px}
+.quote{text-align:center;padding:28px 16px;font-style:italic;color:var(--muted);font-size:15px}
+.quote strong{color:var(--text);font-style:normal}
+.resource-item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--border)}
+.resource-item:last-child{border-bottom:none}
+.resource-item .ico{font-size:20px;line-height:1}
+.resource-item h3{font-size:14px;margin-bottom:4px}
+.resource-item p{font-size:12px;color:var(--muted)}
+.sim-box{margin-top:18px}
+.sim-meta{display:flex;flex-wrap:wrap;gap:10px;font-size:12px;color:var(--muted);margin-bottom:10px}
+.sim-meta strong{color:var(--text)}
+canvas{width:100%;background:#0a0d12;border-radius:10px;border:1px solid var(--border)}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--border);padding:10px 16px;border-radius:10px;font-size:13px;z-index:50;display:none}
+.toast.show{display:block}
+</style>
+</head>
+<body>
+<div class="risk"><strong>Risk warning:</strong> Forex trading involves substantial risk of loss. Automated systems do not guarantee profits. Past simulation is not live performance. <a onclick="go('disclaimer')">Full disclosure</a></div>
+
+<header class="nav">
+  <div class="logo" onclick="go('home')">Apex<span>Flow</span></div>
+  <nav class="nav-links">
+    <button class="nav-link active" data-nav="home" onclick="go('home')">Home</button>
+    <button class="nav-link" data-nav="sim" onclick="go('sim')">Simulation</button>
+    <button class="nav-link" data-nav="install" onclick="go('install')">Install</button>
+    <button class="nav-link" data-nav="resources" onclick="go('resources')">Resources</button>
+    <button class="nav-link" data-nav="contact" onclick="go('contact')">Contact</button>
+  </nav>
+</header>
+
+<main class="wrap">
+
+  <!-- HOME / PRODUCT -->
+  <section id="sec-home" class="section active">
+    <span class="badge">Public view · no login</span>
+    <h1>SMElite</h1>
+    <p class="lead">Market-ready ultra-fast scalping engine for XAUUSD-focused sessions. License is <strong style="color:var(--text)">$1,750 every 24 months</strong> (MT4 &amp; MT5). Renewal reminder by email 30 days before expiry — no automatic charges on this site.</p>
+    <div class="grid grid-2">
+      <div class="card">
+        <div class="price">$1,750</div>
+        <p style="font-size:13px;color:var(--muted);margin:6px 0 14px">Every 24 months · MT4 or MT5</p>
+        <ul class="list">
+          <li>2-year renewable license (not lifetime)</li>
+          <li>Designed for tight-spread ECN conditions</li>
+          <li>Install notes for broker digit settings</li>
+          <li>Purchase and delivery handled by email with ApexFlow</li>
+        </ul>
+        <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-primary" onclick="go('contact')">Enquire by email</button>
+          <button class="btn btn-secondary" onclick="go('sim')">View simulation</button>
+        </div>
+        <p class="note">This public page has no cart or account. For purchase, use Contact and we reply by email.</p>
+      </div>
+      <div class="card">
+        <h2 style="font-size:16px">What you get</h2>
+        <ul class="list">
+          <li>SMElite EA file after payment confirmation</li>
+          <li>Basic install guidance (MT4/MT5)</li>
+          <li>Support by email during the license term</li>
+        </ul>
+        <h2 style="font-size:16px;margin-top:16px">Honest limits</h2>
+        <ul class="list">
+          <li>Trading offers probabilities, not certainties</li>
+          <li>Simulation on this site is educational, not a live feed of your account</li>
+          <li>EAs run inside MetaTrader on your PC/VPS — not inside this browser</li>
+        </ul>
+      </div>
+    </div>
+    <p class="quote">“Trading doesn’t give you <strong>CERTAINTIES</strong> only <strong>PROBABILITIES</strong>.”</p>
+  </section>
+
+  <!-- SIMULATION (lightweight continuous path) -->
+  <section id="sec-sim" class="section">
+    <h2>Market simulation</h2>
+    <p class="lead">Demo path around a gold reference. No login. Not live account results. Daily target example: $50 on a $1,000 demo with 0.01 lot, ×1.1 martingale up to 6 levels.</p>
+    <div class="card sim-box">
+      <div class="sim-meta">
+        <span>Gold ref <strong id="sim-spot">—</strong></span>
+        <span>Price <strong id="sim-price">—</strong></span>
+        <span>Balance <strong id="sim-bal">$1,000.00</strong></span>
+        <span>Daily P/L <strong id="sim-pnl">$0.00</strong></span>
+        <span id="sim-status">Running</span>
+      </div>
+      <canvas id="sim-canvas" height="200"></canvas>
+      <p class="note">Candles keep moving while this tab is open. Path is simulated around the reference spot (live when online, cached offline).</p>
+      <div style="margin-top:10px;display:flex;gap:8px">
+        <button class="btn btn-secondary" id="sim-toggle" onclick="toggleSim()">Pause</button>
+        <button class="btn btn-secondary" onclick="resetSim()">Reset demo</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- INSTALL -->
+  <section id="sec-install" class="section">
+    <h2>Install guide</h2>
+    <p class="lead">After you receive SMElite by email, install it in MetaTrader. Adjust inputs for your broker’s digits.</p>
+    <div class="grid grid-2">
+      <div class="card">
+        <h2 style="font-size:15px">MT4 / MT5 steps</h2>
+        <ol class="list" style="list-style:decimal">
+          <li>Copy the EA into <code>MQL4/Experts</code> or <code>MQL5/Experts</code></li>
+          <li>Restart MetaTrader or refresh Navigator</li>
+          <li>Attach to the chart (e.g. XAUUSD M1/M5)</li>
+          <li>Allow Algo Trading / AutoTrading</li>
+          <li>Match lot and risk inputs to your account size</li>
+        </ol>
+      </div>
+      <div class="card">
+        <h2 style="font-size:15px">Broker digits tip</h2>
+        <ul class="list">
+          <li>Some brokers quote gold with an extra decimal (e.g. 3 vs 2). PIP-related inputs may need an extra <strong>0</strong>.</li>
+          <li>Example: if <code>InpMinProfitClose = 2</code> on 2-digit style pricing, scale with lot size (e.g. 0.01 lot → about $2; 0.1 lot → about $20) and add a zero where your broker’s digit format requires it.</li>
+          <li>Always forward-test on demo with your exact broker first.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESOURCES (was Downloads — no files) -->
+  <section id="sec-resources" class="section">
+    <h2>Resources</h2>
+    <p class="lead">No software downloads on this public page. Use these references while you evaluate SMElite. Files and license keys are sent by email after purchase.</p>
+    <div class="card">
+      <div class="resource-item">
+        <div class="ico">📘</div>
+        <div>
+          <h3>License model</h3>
+          <p>$1,750 every 24 months for MT4 or MT5. We aim to email a renewal reminder ~30 days before expiry. Not a lifetime license.</p>
+        </div>
+      </div>
+      <div class="resource-item">
+        <div class="ico">⚠️</div>
+        <div>
+          <h3>Risk & expectations</h3>
+          <p>Martingale-style recovery increases exposure in adverse moves. Cap risk, avoid high-impact news if you are unsure, and never trade money you cannot afford to lose.</p>
+        </div>
+      </div>
+      <div class="resource-item">
+        <div class="ico">🏦</div>
+        <div>
+          <h3>Broker checklist</h3>
+          <p>ECN/raw spread preferred; stable XAUUSD quotes; know whether your symbol uses 2 or 3 decimal places; confirm hedging vs netting account type.</p>
+        </div>
+      </div>
+      <div class="resource-item">
+        <div class="ico">📬</div>
+        <div>
+          <h3>How delivery works</h3>
+          <p>Enquire → invoice details by email → you send payment proof → after confirmation, EA and install notes are emailed (typical wait discussed in correspondence, often within 24–48 hours once payment is verified).</p>
+        </div>
+      </div>
+      <div class="resource-item">
+        <div class="ico">🔗</div>
+        <div>
+          <h3>Full member site</h3>
+          <p>Accounts, cart, KeyGen, and admin tools live on the full ApexFlow storefront (separate file). This page stays open for guests.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT = email correspondence -->
+  <section id="sec-contact" class="section">
+    <h2>Contact / email</h2>
+    <p class="lead">Interaction on this public site is by email only. Fill the form to open your mail app with a pre-filled message, or copy the text and send manually.</p>
+    <div class="card" style="max-width:560px">
+      <div class="form-row">
+        <div>
+          <label for="c-name">Your name</label>
+          <input id="c-name" type="text" placeholder="Name" autocomplete="name">
+        </div>
+        <div>
+          <label for="c-email">Your email</label>
+          <input id="c-email" type="email" placeholder="you@example.com" autocomplete="email">
+        </div>
+      </div>
+      <label for="c-topic">Topic</label>
+      <select id="c-topic">
+        <option value="Purchase enquiry — SMElite">Purchase enquiry — SMElite</option>
+        <option value="Install / setup question">Install / setup question</option>
+        <option value="License / renewal">License / renewal</option>
+        <option value="General question">General question</option>
+      </select>
+      <label for="c-msg">Message</label>
+      <textarea id="c-msg" placeholder="Include MT4 or MT5 preference, and any broker name if relevant."></textarea>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-primary" type="button" onclick="sendEmail()">Open email app</button>
+        <button class="btn btn-secondary" type="button" onclick="copyEmail()">Copy message</button>
+      </div>
+      <p class="note">Sends to <strong style="color:var(--muted)">support@apexflow.systems</strong> via your device mail client (<code>mailto:</code>). Nothing is uploaded to a server from this page.</p>
+    </div>
+  </section>
+
+  <!-- DISCLAIMER -->
+  <section id="sec-disclaimer" class="section">
+    <h2>Risk disclosure</h2>
+    <div class="card">
+      <p style="font-size:13px;color:var(--muted)">Forex and CFDs are leveraged products. You can lose more than your deposit depending on account type and region. ApexFlow / SMElite does not guarantee profits. Market simulation on this site is illustrative only. You are responsible for how you use any software on live accounts. This is not investment advice.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <a onclick="go('home')">Home</a>
+  <a onclick="go('resources')">Resources</a>
+  <a onclick="go('contact')">Contact</a>
+  <a onclick="go('disclaimer')">Risk</a>
+  <div style="margin-top:8px">ApexFlow public view · no login required</div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SUPPORT = 'support@apexflow.systems';
+
+function go(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById('sec-' + id);
+  if (el) el.classList.add('active');
+  document.querySelectorAll('.nav-link').forEach(b => {
+    b.classList.toggle('active', b.getAttribute('data-nav') === id);
+  });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (id === 'sim') startSim();
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+function sendEmail() {
+  const name = (document.getElementById('c-name').value || '').trim();
+  const email = (document.getElementById('c-email').value || '').trim();
+  const topic = document.getElementById('c-topic').value;
+  const msg = (document.getElementById('c-msg').value || '').trim();
+  if (!email || !msg) { toast('Please add your email and a message'); return; }
+  const body = `Name: ${name}\nEmail: ${email}\n\n${msg}\n\n— Sent from ApexFlow public site`;
+  const href = `mailto:${SUPPORT}?subject=${encodeURIComponent(topic)}&body=${encodeURIComponent(body)}`;
+  window.location.href = href;
+}
+
+function copyEmail() {
+  const name = (document.getElementById('c-name').value || '').trim();
+  const email = (document.getElementById('c-email').value || '').trim();
+  const topic = document.getElementById('c-topic').value;
+  const msg = (document.getElementById('c-msg').value || '').trim();
+  const text = `To: ${SUPPORT}\nSubject: ${topic}\n\nName: ${name}\nEmail: ${email}\n\n${msg}`;
+  navigator.clipboard.writeText(text).then(() => toast('Copied — paste into your email')).catch(() => toast('Copy failed — select text manually'));
+}
+
+/* Lightweight continuous gold path simulation */
+const sim = {
+  spot: 4150,
+  price: 4150,
+  bal: 1000,
+  dayStart: 1000,
+  pnl: 0,
+  target: 50,
+  targetHit: false,
+  prices: [],
+  running: false,
+  timer: null
+};
+
+async function refreshSpot() {
+  try {
+    const r = await fetch('https://api.gold-api.com/price/XAU', { cache: 'no-store' });
+    if (!r.ok) throw new Error('http');
+    const d = await r.json();
+    const p = Number(d.price);
+    if (p > 1000 && p < 20000) {
+      sim.spot = +p.toFixed(2);
+      try { localStorage.setItem('af_public_spot', JSON.stringify({ p: sim.spot, t: Date.now() })); } catch (e) {}
+    }
+  } catch (e) {
+    try {
+      const c = JSON.parse(localStorage.getItem('af_public_spot') || 'null');
+      if (c && c.p) sim.spot = c.p;
+    } catch (e2) {}
+  }
+  document.getElementById('sim-spot').textContent = '$' + sim.spot.toFixed(2);
+}
+
+function tickPrice() {
+  const pull = (sim.spot - sim.price) * 0.04;
+  const noise = (Math.random() - 0.5) * 2.2;
+  const impulse = Math.random() < 0.08 ? (Math.random() - 0.5) * 5 : 0;
+  let n = sim.price + pull + noise + impulse;
+  n = Math.max(sim.spot - 40, Math.min(sim.spot + 40, n));
+  sim.price = +n.toFixed(2);
+  sim.prices.push(sim.price);
+  if (sim.prices.length > 80) sim.prices.shift();
+  // Soft demo P/L drift until target (illustrative only)
+  if (!sim.targetHit && Math.random() < 0.12) {
+    const step = +( (Math.random() - 0.35) * 3.5 ).toFixed(2);
+    sim.pnl = +(sim.pnl + step).toFixed(2);
+    sim.bal = +(sim.dayStart + sim.pnl).toFixed(2);
+    if (sim.pnl >= sim.target) {
+      sim.targetHit = true;
+      sim.pnl = sim.target;
+      sim.bal = +(sim.dayStart + sim.target).toFixed(2);
+    }
+  }
+}
+
+function draw() {
+  const canvas = document.getElementById('sim-canvas');
+  if (!canvas || sim.prices.length < 2) return;
+  const dpr = window.devicePixelRatio || 1;
+  const w = canvas.clientWidth || 600;
+  const h = 200;
+  canvas.width = w * dpr;
+  canvas.height = h * dpr;
+  const ctx = canvas.getContext('2d');
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, w, h);
+  const data = sim.prices;
+  const min = Math.min(...data);
+  const max = Math.max(...data);
+  const pad = (max - min) * 0.08 || 1;
+  const lo = min - pad, hi = max + pad;
+  const n = data.length;
+  // simple candle-ish segments every 2 points
+  const bodyW = Math.max(2, (w - 20) / Math.max(n / 2, 1) * 0.6);
+  for (let i = 1; i < n; i += 2) {
+    const o = data[i - 1], c = data[i];
+    const x = 10 + (i / n) * (w - 20);
+    const yO = h - ((o - lo) / (hi - lo)) * (h - 16) - 8;
+    const yC = h - ((c - lo) / (hi - lo)) * (h - 16) - 8;
+    const up = c >= o;
+    ctx.strokeStyle = up ? '#2ED573' : '#FF4757';
+    ctx.fillStyle = up ? 'rgba(46,213,115,.35)' : 'rgba(255,71,87,.35)';
+    ctx.beginPath();
+    ctx.moveTo(x, Math.min(yO, yC) - 4);
+    ctx.lineTo(x, Math.max(yO, yC) + 4);
+    ctx.stroke();
+    const top = Math.min(yO, yC);
+    const bh = Math.max(2, Math.abs(yC - yO));
+    ctx.fillRect(x - bodyW / 2, top, bodyW, bh);
+  }
+  document.getElementById('sim-price').textContent = sim.price.toFixed(2);
+  document.getElementById('sim-bal').textContent = '$' + sim.bal.toFixed(2);
+  const pnlEl = document.getElementById('sim-pnl');
+  pnlEl.textContent = (sim.pnl >= 0 ? '+' : '') + '$' + Math.abs(sim.pnl).toFixed(2);
+  pnlEl.style.color = sim.pnl >= 0 ? 'var(--ok)' : 'var(--danger)';
+  document.getElementById('sim-status').textContent = sim.targetHit ? 'Daily target example hit · path still live' : 'Running';
+}
+
+function loop() {
+  if (!sim.running) return;
+  tickPrice();
+  draw();
+}
+
+function startSim() {
+  if (sim.running) return;
+  if (sim.prices.length < 10) {
+    sim.price = sim.spot;
+    for (let i = 0; i < 40; i++) tickPrice();
+  }
+  sim.running = true;
+  document.getElementById('sim-toggle').textContent = 'Pause';
+  sim.timer = setInterval(loop, 900);
+  draw();
+}
+
+function toggleSim() {
+  if (sim.running) {
+    sim.running = false;
+    clearInterval(sim.timer);
+    sim.timer = null;
+    document.getElementById('sim-toggle').textContent = 'Play';
+    document.getElementById('sim-status').textContent = 'Paused';
+  } else startSim();
+}
+
+function resetSim() {
+  sim.bal = 1000;
+  sim.dayStart = 1000;
+  sim.pnl = 0;
+  sim.targetHit = false;
+  sim.prices = [];
+  sim.price = sim.spot;
+  for (let i = 0; i < 40; i++) tickPrice();
+  draw();
+  if (!sim.running) startSim();
+}
+
+refreshSpot().then(() => {
+  sim.price = sim.spot;
+  resetSim();
+});
+setInterval(refreshSpot, 5 * 60 * 1000);
+</script>
+</body>
+</html>
